@@ -13,7 +13,9 @@ def post_question():
 
 
 if __name__ == '__main__':
-    app.run(debug=os.getenv("DEBUG"))
-    # api_key = os.getenv("API_KEY")
+    # Use Gunicorn for production
+    host = '0.0.0.0'
+    port = int(os.getenv("PORT", 5000))
+    debug = os.getenv("DEBUG", False)
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    app.run(host=host, port=port, debug=debug)
