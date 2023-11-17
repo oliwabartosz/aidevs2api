@@ -22,7 +22,7 @@ llm = ChatOpenAI(openai_api_key=os.getenv("OPEN_API_KEY"), model_name="gpt-4-110
 prompt = ChatPromptTemplate(
     messages=[
         SystemMessagePromptTemplate.from_template(
-            """You are a nice chatbot having a conversation with a human."""
+            """You are a nice chatbot having a conversation with a human. Answer with one word"""
         ),
         # The `variable_name` here is what must align with memory
         MessagesPlaceholder(variable_name="chat_history"),
@@ -43,7 +43,7 @@ conversation = LLMChain(
 def post_question():
     data = request.get_json()
     print(data)
-    sleep(2)
+    sleep(5)
     reply = (conversation({"question": data["question"]})['text'])
     with open('conversation.txt', 'a') as file:
         file.write(str(data) + '\n' + reply + '\n')
