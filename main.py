@@ -1,6 +1,10 @@
+from dotenv import load_dotenv
+import os
 from flask import Flask, request, jsonify
 
+load_dotenv()
 app = Flask(__name__)
+
 
 @app.route('/openapi', methods=['POST'])
 def post_question():
@@ -11,5 +15,7 @@ def post_question():
 if __name__ == '__main__':
     # Use Gunicorn for production
     host = '0.0.0.0'
+    port = int(os.getenv("PORT", 5000))
+    debug = os.getenv("DEBUG", False)
 
-    app.run(host=host, port=5000, debug=False)
+    app.run(host=host, port=port, debug=debug)
