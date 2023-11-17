@@ -10,13 +10,12 @@ app = Flask(__name__)
 
 @app.route('/send_question', methods=['POST'])
 def post_question():
-    try:
         data = request.get_json()
         if data:
             with open('messages.txt', 'w') as file:
                 json.dump(data, file)
                 file.write('\n')  # Add a newline after each JSON object
-
+        return ''
 @app.route('/get_question')
 def get_messages():
     try:
