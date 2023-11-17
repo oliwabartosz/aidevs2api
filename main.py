@@ -17,13 +17,6 @@ def post_question():
                 json.dump(data, file)
                 file.write('\n')  # Add a newline after each JSON object
 
-            return jsonify({'message': 'Data saved successfully'}), 200
-        else:
-            return jsonify({'error': 'No data provided'}), 400
-
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
 @app.route('/get_question')
 def get_messages():
     try:
