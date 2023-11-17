@@ -42,7 +42,9 @@ conversation = LLMChain(
 @app.route('/ownapi', methods=['POST'])
 def post_question():
     data = request.get_json()
+    print(data)
     sleep(2)
+    print(conversation)
     reply = (conversation({"question": data["question"]})['text'])
     with open('conversation.txt', 'a') as file:
         file.write(str(data) + '\n' + reply + '\n')
