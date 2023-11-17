@@ -30,7 +30,7 @@ def get_question():
         with open('messages.txt', 'r') as file:
             messages = [json.loads(line) for line in file.readlines()]
 
-        return jsonify({'question': messages}), 200
+        return jsonify({"question": messages}), 200
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
