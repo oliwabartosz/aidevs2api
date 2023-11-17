@@ -4,18 +4,52 @@ from dotenv import load_dotenv
 import os
 from flask import Flask, request, jsonify
 
+from langchain.chat_models import ChatOpenAI
+from langchain.prompts import (
+    ChatPromptTemplate,
+    MessagesPlaceholder,
+    SystemMessagePromptTemplate,
+    HumanMessagePromptTemplate,
+)
+from langchain.chains import LLMChain
+from langchain.memory import ConversationBufferMemory
+
 load_dotenv()
 app = Flask(__name__)
 
+llm = ChatOpenAI(openai_api_key=os.getenv("OPEN_API_KEY"), model_name="gpt-4-1106-preview")
+prompt = ChatPromptTemplate(
+    messages=[
+        SystemMessagePromptTemplate.from_template(
+            "You are a nice chatbot having a conversation with a human."
+        ),
+        # The `variable_name` here is what must align with memory
+        MessagesPlaceholder(variable_name="chat_history"),
+        HumanMessagePromptTemplate.from_template("{question}")
+    ]
+)
+# Notice that we `return_messages=True` to fit into the MessagesPlaceholder
+# Notice that `"chat_history"` aligns with the MessagesPlaceholder name.
+memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
+conversation = LLMChain(
+    llm=llm,
+    prompt=prompt,
+    verbose=True,
+    memory=memory
+)
 
-@app.route('/send_question', methods=['POST'])
+@app.route('/ownapi', methods=['POST'])
 def post_question():
-        data = request.get_json()
-        if data:
-            with open('messages.txt', 'w') as file:
-                json.dump(data, file)
-                file.write('\n')  # Add a newline after each JSON object
-        return ''
+    data = request.get_json()
+
+    reply = (conversation({"question": data["question"]})['text'])
+    with open('conversation.txt', 'a') as file:
+        file.write(str(data) + '\n' + reply + '\n')
+
+
+    return jsonify({'reply': reply})
+
+
 @app.route('/get_question')
 def get_messages():
     try:
@@ -27,7 +61,6 @@ def get_messages():
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-
 
 
 if __name__ == '__main__':
