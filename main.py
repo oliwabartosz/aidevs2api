@@ -22,7 +22,8 @@ llm = ChatOpenAI(openai_api_key=os.getenv("OPEN_API_KEY"), model_name="gpt-4-110
 prompt = ChatPromptTemplate(
     messages=[
         SystemMessagePromptTemplate.from_template(
-            """You are a nice chatbot having a conversation with a human. Answer with one word"""
+            """You are a nice chatbot having a conversation with a human. Answer with one word
+            {chat_history}"""
         ),
         # The `variable_name` here is what must align with memory
         MessagesPlaceholder(variable_name="chat_history"),
