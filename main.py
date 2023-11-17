@@ -25,15 +25,20 @@ def post_question():
         return jsonify({'error': str(e)}), 500
 
 @app.route('/get_question')
-def get_question():
+def get_messages():
     try:
+        messages = []
         with open('messages.txt', 'r') as file:
-            messages = [json.loads(line) for line in file.readlines()]
+            for line in file:
+                # Parse each line as JSON and directly append to messages list
+                message = json.loads(line)
+                messages.append(message)
 
-        return jsonify({"question": messages}), 200
+        return jsonify(messages=messages), 200
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
 
 
 
