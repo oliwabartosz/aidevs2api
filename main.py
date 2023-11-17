@@ -13,9 +13,9 @@ def post_question():
     try:
         data = request.get_json()
         if data:
-            # Save the data to a file
             with open('messages.txt', 'w') as file:
-                file.write(str(data) + '\n')
+                json.dump(data, file)
+                file.write('\n')  # Add a newline after each JSON object
 
             return jsonify({'message': 'Data saved successfully'}), 200
         else:
