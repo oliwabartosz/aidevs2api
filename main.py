@@ -1,3 +1,5 @@
+import json
+
 from dotenv import load_dotenv
 import os
 from flask import Flask, request, jsonify
@@ -6,7 +8,7 @@ load_dotenv()
 app = Flask(__name__)
 
 
-@app.route('/openapi', methods=['POST'])
+@app.route('/send_question', methods=['POST'])
 def post_question():
     try:
         data = request.get_json()
@@ -21,6 +23,18 @@ def post_question():
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+@app.route('/get_question')
+def get_question():
+    try:
+        with open('messages.txt', 'r') as file:
+            messages = [json.loads(line) for line in file.readlines()]
+
+        return jsonify({'question': messages}), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 
 
 if __name__ == '__main__':
