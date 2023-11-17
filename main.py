@@ -8,12 +8,22 @@ app = Flask(__name__)
 
 @app.route('/openapi', methods=['POST'])
 def post_question():
-    data = request.get_json()
-    return jsonify(data)
+    try:
+        data = request.get_json()
+        if data:
+            # Save the data to a file
+            with open('messages.txt', 'a') as file:
+                file.write(str(data) + '\n')
+
+            return jsonify({'message': 'Data saved successfully'}), 200
+        else:
+            return jsonify({'error': 'No data provided'}), 400
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 
 if __name__ == '__main__':
-    # Use Gunicorn for production
     host = '0.0.0.0'
     port = int(os.getenv("PORT", 5000))
     debug = os.getenv("DEBUG", False)
