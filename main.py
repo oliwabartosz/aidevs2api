@@ -15,6 +15,17 @@ from langchain.prompts import (
 from langchain.chains import LLMChain
 from langchain.memory import ConversationBufferMemory
 
+# Delete conv
+file_path = "conversation.txt"
+
+try:
+    os.remove(file_path)
+    print(f"The file {file_path} has been deleted successfully.")
+except FileNotFoundError:
+    print(f"The file {file_path} does not exist.")
+except Exception as e:
+    print(f"An error occurred: {e}")
+
 load_dotenv()
 app = Flask(__name__)
 
@@ -22,8 +33,8 @@ llm = ChatOpenAI(openai_api_key=os.getenv("OPEN_API_KEY"), model_name="gpt-4-110
 prompt = ChatPromptTemplate(
     messages=[
         SystemMessagePromptTemplate.from_template(
-            """You are a nice chatbot having a conversation with a human. Answer with one word
-            {chat_history}"""
+            """You are a nice chatbot having a conversation with a human. Answer with one word.
+            """
         ),
         # The `variable_name` here is what must align with memory
         MessagesPlaceholder(variable_name="chat_history"),
@@ -42,12 +53,22 @@ conversation = LLMChain(
 
 @app.route('/ownapi', methods=['POST'])
 def post_question():
-    sleep(5)
-    data = request.get_json()
-    print(data)
-    reply = (conversation({"question": data["question"]})['text'])
+    with open(file_path, 'a+') as file:
+        file.seek(0)
+        history = file.read()
+
+    with open('conversation.txt', 'r') as file:
+        data = request.get_json()
+        reply = (conversation({"question": f"###History of chat: {history}" + data["question"]})['text'])
+        print(history)
+
     with open('conversation.txt', 'a') as file:
-        file.write(str(data) + '\n' + reply + '\n')
+        file.write(str('Human: ' + data['question']) + '\n' + 'AI: ' + reply + '\n')
+
+
+
+
+
 
 
     return jsonify({'reply': reply})
