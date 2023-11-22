@@ -102,7 +102,7 @@ def post_question_google():
 
     search = GoogleSearch(params)
     results = search.get_dict()
-    print(results)
+    print(results['organic results'])
 
 
 if __name__ == '__main__':
