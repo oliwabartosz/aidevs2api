@@ -89,9 +89,10 @@ def get_messages():
 @app.route('/google', methods=['POST'])
 def post_question_google():
     data = request.get_json()
+    search_query = conversation({"question": data["question"]})['text']
 
     params = {
-        "q": data["question"],
+        "q": search_query,
         "location": "Poland",
         "hl": "pl",
         "gl": "pl",
