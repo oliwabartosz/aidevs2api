@@ -105,6 +105,8 @@ def post_question_google():
     with open('google-json.txt', 'w') as json_file:
         json.dump(results, json_file)
 
+    print(results("organic_results")[0]["link"])
+
 
 if __name__ == '__main__':
     host = '0.0.0.0'
