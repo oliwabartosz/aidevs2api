@@ -105,7 +105,8 @@ def post_question_google():
     with open('google-json.txt', 'w') as json_file:
         json.dump(results["organic_results"], json_file)
 
-    print(results["organic_results"][0]["link"])
+    return jsonify({'reply': results["organic_results"][0]["link"]})
+
 
 
 if __name__ == '__main__':
