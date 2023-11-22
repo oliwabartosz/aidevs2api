@@ -103,7 +103,7 @@ def post_question_google():
     search = GoogleSearch(params)
     results = search.get_dict()
     with open('google-json.txt', 'w') as json_file:
-        json.dump(results, json_file)
+        json.dump(results("organic_results"), json_file)
 
     print(results("organic_results")[0]["link"])
 
