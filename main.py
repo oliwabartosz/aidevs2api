@@ -87,7 +87,7 @@ def get_messages():
         return jsonify({'error': str(e)}), 500
 
 @app.route('/google', methods=['POST'])
-def post_question():
+def post_question_google():
     data = request.get_json()
 
     params = {
