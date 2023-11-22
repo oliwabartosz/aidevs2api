@@ -1,6 +1,9 @@
 import json
 from time import sleep
 
+import dotenv
+from serpapi import GoogleSearch
+
 from dotenv import load_dotenv
 import os
 from flask import Flask, request, jsonify
@@ -29,16 +32,20 @@ except Exception as e:
 load_dotenv()
 app = Flask(__name__)
 
+ownapi_prompt = """You are a nice chatbot having a conversation with a human. Answer with one word."""
+google_system_prompt = """User will provide a sentence, that will be used as a query for Google Search.
+                    My task is to extract information into one sentence to make a google query."""
+google_human_prompt = "User: "
+
 llm = ChatOpenAI(openai_api_key=os.getenv("OPEN_API_KEY"), model_name="gpt-4-1106-preview")
 prompt = ChatPromptTemplate(
     messages=[
         SystemMessagePromptTemplate.from_template(
-            """You are a nice chatbot having a conversation with a human. Answer with one word.
-            """
+            google_system_prompt
         ),
         # The `variable_name` here is what must align with memory
         MessagesPlaceholder(variable_name="chat_history"),
-        HumanMessagePromptTemplate.from_template("{question}")
+        HumanMessagePromptTemplate.from_template(f"{google_human_prompt}" + "{question}")
     ]
 )
 # Notice that we `return_messages=True` to fit into the MessagesPlaceholder
@@ -65,14 +72,7 @@ def post_question():
     with open('conversation.txt', 'a') as file:
         file.write(str('Human: ' + data['question']) + '\n' + 'AI: ' + reply + '\n')
 
-
-
-
-
-
-
     return jsonify({'reply': reply})
-
 
 @app.route('/get_question')
 def get_messages():
@@ -85,6 +85,23 @@ def get_messages():
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+@app.route('/google', methods=['POST'])
+def post_question():
+    data = request.get_json()
+
+    params = {
+        "q": data["question"],
+        "location": "Poland",
+        "hl": "pl",
+        "gl": "pl",
+        "google_domain": "google.com",
+        "api_key": os.getenv("SERPAPI_KEY")
+    }
+
+    search = GoogleSearch(params)
+    results = search.get_dict()
+    print(results)
 
 
 if __name__ == '__main__':
