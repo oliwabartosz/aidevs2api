@@ -60,6 +60,7 @@ conversation = LLMChain(
     memory=memory
 )
 
+
 @app.route('/ownapi', methods=['POST'])
 def post_question():
     with open(file_path, 'a+') as file:
@@ -76,6 +77,7 @@ def post_question():
 
     return jsonify({'reply': reply})
 
+
 @app.route('/get_question')
 def get_messages():
     try:
@@ -87,6 +89,7 @@ def get_messages():
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
 
 @app.route('/google', methods=['POST'])
 def post_question_google():
@@ -109,11 +112,13 @@ def post_question_google():
 
     return jsonify({'reply': results["organic_results"][0]["link"]})
 
-@app.route('/m2html', method=['POST'])
+
+@app.route('/m2html', methods=['POST'])
 def md2html():
     data = request.get_json()
     reply = conversation({"question": data["question"]})['text']
     return jsonify({'reply': reply})
+
 
 if __name__ == '__main__':
     host = '0.0.0.0'
