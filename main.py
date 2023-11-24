@@ -119,6 +119,7 @@ def post_question_google():
 def md2html():
     data = request.get_json()
     reply = conversation({"question": data["question"]})['text']
+    print(reply)
     return jsonify({'reply': reply})
 
 
