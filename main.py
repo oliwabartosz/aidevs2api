@@ -37,7 +37,9 @@ google_system_prompt = """User will provide a sentence, that will be used as a q
                     My task is to extract information into one sentence to make a google query."""
 google_human_prompt = "User: "
 
-llm = ChatOpenAI(openai_api_key=os.getenv("OPEN_API_KEY"), model_name="gpt-4-1106-preview")
+model_name_for_google_task = "gpt-4-1106-preview"
+model_name_for_m2html_task = "ft:gpt-3.5-turbo-1106:personal::8OVgZsjJ"
+llm = ChatOpenAI(openai_api_key=os.getenv("OPEN_API_KEY"), model_name=model_name_for_m2html_task)
 prompt = ChatPromptTemplate(
     messages=[
         SystemMessagePromptTemplate.from_template(
@@ -107,7 +109,11 @@ def post_question_google():
 
     return jsonify({'reply': results["organic_results"][0]["link"]})
 
-
+@app.route('/m2html', method=['POST'])
+def md2html():
+    data = request.get_json()
+    reply = conversation({"question": data["question"]})['text']
+    return jsonify({'reply': reply})
 
 if __name__ == '__main__':
     host = '0.0.0.0'
