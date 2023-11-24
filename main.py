@@ -36,6 +36,8 @@ ownapi_prompt = """You are a nice chatbot having a conversation with a human. An
 google_system_prompt = """User will provide a sentence, that will be used as a query for Google Search.
                     My task is to extract information into one sentence to make a google query."""
 google_human_prompt = "User: "
+md2html_system = """Convert the Markdown to HTML:"""
+md2html_human = """"""
 
 model_name_for_google_task = "gpt-4-1106-preview"
 model_name_for_m2html_task = "ft:gpt-3.5-turbo-1106:personal::8OVgZsjJ"
@@ -43,11 +45,11 @@ llm = ChatOpenAI(openai_api_key=os.getenv("OPEN_API_KEY"), model_name=model_name
 prompt = ChatPromptTemplate(
     messages=[
         SystemMessagePromptTemplate.from_template(
-            google_system_prompt
+            md2html_system
         ),
         # The `variable_name` here is what must align with memory
         MessagesPlaceholder(variable_name="chat_history"),
-        HumanMessagePromptTemplate.from_template(f"{google_human_prompt}" + "{question}")
+        HumanMessagePromptTemplate.from_template(f"{md2html_human}" + "{question}")
     ]
 )
 # Notice that we `return_messages=True` to fit into the MessagesPlaceholder
@@ -113,7 +115,7 @@ def post_question_google():
     return jsonify({'reply': results["organic_results"][0]["link"]})
 
 
-@app.route('/m2html', methods=['POST'])
+@app.route('/md2html', methods=['POST'])
 def md2html():
     data = request.get_json()
     reply = conversation({"question": data["question"]})['text']
