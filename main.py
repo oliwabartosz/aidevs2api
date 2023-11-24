@@ -122,38 +122,6 @@ def md2html():
     print(reply)
     return jsonify({'reply': reply})
 
-@app.route('/md2html', methods=['POST'])
-def md2html2():
-    def convert_md_to_html(md_text):
-        # Convert headers
-        md_text = md_text.replace("# ", "<h1>") + "</h1>"
-        md_text = md_text.replace("## ", "<h2>") + "</h2>"
-        md_text = md_text.replace("### ", "<h3>") + "</h3>"
-        # Add more header levels as needed
-
-        # Convert bold text
-        md_text = md_text.replace("**", "<strong>")
-
-        # Convert italic text
-        md_text = md_text.replace("*", "<em>")
-
-        # Convert unordered lists
-        lines = md_text.split("\n")
-        for i in range(len(lines)):
-            if lines[i].startswith("- "):
-                lines[i] = "<li>" + lines[i][2:] + "</li>"
-        md_text = "<ul>\n" + "\n".join(lines) + "\n</ul>"
-
-        # Convert links
-        md_text = md_text.replace("[", "<a href='").replace("](", "'>").replace(")", "</a>")
-
-        return md_text
-
-    data = request.get_json()
-    reply = convert_md_to_html(data["question"])
-    print(reply)
-    return jsonify({'reply': reply})
-
 
 if __name__ == '__main__':
     host = '0.0.0.0'
