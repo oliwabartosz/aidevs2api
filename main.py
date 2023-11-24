@@ -41,7 +41,7 @@ md2html_system = """Convert the Markdown to HTML. Return nested tags in one line
 md2html_human = """"""
 
 model_name_for_google_task = "gpt-4-1106-preview"
-model_name_for_m2html_task = "ft:gpt-3.5-turbo-1106:personal::8OVgZsjJ"
+model_name_for_m2html_task = "ft:gpt-3.5-turbo-1106:personal::8OWw7577"
 llm = ChatOpenAI(openai_api_key=os.getenv("OPEN_API_KEY"), model_name=model_name_for_m2html_task)
 prompt = ChatPromptTemplate(
     messages=[
